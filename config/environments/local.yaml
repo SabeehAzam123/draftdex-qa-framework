@@ -1,0 +1,16 @@
+# DraftDex running on this machine (`npm run dev` in the app's folder).
+name: local
+description: DraftDex on this machine
+# test-data: flows may create and change data. production: preview only, never run (src/config refuses).
+dataPolicy: test-data
+baseUrl: http://localhost:3000
+
+# Accounts the flows can't create themselves. Values are the NAMES of .env variables, never the secrets.
+accounts:
+  admin:
+    email: DRAFTDEX_ADMIN_EMAIL
+    password: DRAFTDEX_ADMIN_PASSWORD
+
+# Started by the run when DRAFTDEX_APP_DIR is set and the app isn't up yet
+app:
+  startCommand: npm run dev
