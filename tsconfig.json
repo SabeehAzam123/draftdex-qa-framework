@@ -1,27 +1,25 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "types": ["node", "@playwright/test"],
+    "lib": ["ES2023", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": false,
+    "useUnknownInCatchVariables": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "strict": true,
+    "isolatedModules": true,
     "skipLibCheck": true,
+    "noEmit": true,
     "baseUrl": ".",
-
     "paths": {
-      "@e2e/*": ["playwright/e2e/*"],
-      "@ui/*": ["playwright/ui/*"],
-      "@data/*": ["playwright/data/*"],
-      "@services/*": ["playwright/services/*"],
-      "@api-kit/*": ["playwright/api-kit/*"],
-      "@core/*": ["playwright/core/*"],
-      "@support/*": ["playwright/support/*"],
-      "@config/*": ["playwright/config/*"],
-      "@runs/*": ["playwright/runs/*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["playwright/**/*.ts", "playwright.config.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "playwright.config.ts"]
 }

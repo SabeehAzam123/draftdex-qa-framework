@@ -1,48 +1,63 @@
-import { defineConfig, devices } from '@playwright/test';
-import { defineBddConfig } from 'playwright-bdd';
-import { env } from './playwright/config/env';
-import path from 'path';
+import { defineConfig, devices } from "@playwright/test";
+import { loadRunConfig, shareRunId } from "./src/config/env";
 
-const testDir = defineBddConfig({
-  features: 'playwright/e2e/bdd/features/**/*.feature',
-  steps: [
-      'playwright/e2e/bdd/steps/**/*.ts',
-      'playwright/support/bdd.fixtures.ts',
-    ],
-  outputDir: 'playwright/e2e/bdd/generated',
-});
+/**
+ * Three projects:
+ * - internal: the framework's self-tests (no app, no browser, no network)
+ * - api:      API flows (no browser)
+ * - ui:       UI flows in a browser
+ * api and ui first run app-check, which stops the run early with a clear message if DraftDex isn't up.
+ */
+shareRunId();
+const run = loadRunConfig();
 
 export default defineConfig({
-    testDir: path.resolve(__dirname, 'playwright/e2e'),
-    timeout: 30_000,
-    expect: { timeout: 5_000 },
-
-    // Nice defaults for CI + local
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 2 : undefined,
-
-    // Artifacts (folders exist; many are gitignored)
-    reporter: [['html', { open: 'never' }], ['line']],
-
-    // ✅ Absolute paths so they work no matter which config is used
-    globalSetup: path.resolve(__dirname, 'playwright/support/global-setup.ts'),
-    globalTeardown: path.resolve(__dirname, 'playwright/support/global-teardown.ts'),
-
+    timeout: run.timeouts.test,
+    expect: { timeout: run.timeouts.expect },
+    retries: run.retries,
+    workers: run.workers,
+    fullyParallel: true,
+    forbidOnly: run.isCI,
+    outputDir: "test-results",
+    reporter: [
+        ["list"],
+        ["html", { outputFolder: "reports/html", open: "never" }],
+        ["json", { outputFile: "reports/results.json" }],
+        ["junit", { outputFile: "reports/junit.xml" }],
+    ],
     use: {
-        baseURL: env.UI_BASE_URL,
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-        storageState: 'playwright/support/storage/state.json',
-
-        // Keep downloads in your dedicated folder
-        acceptDownloads: true
+        baseURL: run.env.baseUrl,
+        actionTimeout: run.timeouts.action,
+        navigationTimeout: run.timeouts.navigation,
+        trace: run.capture.trace,
+        screenshot: run.capture.screenshot,
+        video: run.capture.video,
+        testIdAttribute: "data-testid",
     },
-
+    webServer: run.app
+        ? {
+              command: run.app.startCommand,
+              cwd: run.app.dir,
+              url: `${run.env.baseUrl}/api/health`,
+              reuseExistingServer: true,
+              timeout: 180_000,
+          }
+        : undefined,
     projects: [
+        { name: "internal", testDir: "tests/_internal", testMatch: /.*\.internal\.spec\.ts/ },
+        { name: "app-check", testDir: "tests/_setup", testMatch: /app-check\.setup\.ts/ },
+        { name: "api", testDir: "tests/api", testMatch: /.*\.api\.spec\.ts/, dependencies: ["app-check"] },
         {
-            name: 'chromium',
-            use: { ...devices['Desktop Chrome'] }
-        }
-    ]
+            name: "ui",
+            testDir: "tests/ui",
+            testMatch: /.*\.ui\.spec\.ts/,
+            dependencies: ["app-check"],
+            use: {
+                ...devices["Desktop Chrome"],
+                ...(run.browser.channel ? { channel: run.browser.channel } : {}),
+                headless: run.browser.headless,
+                viewport: { width: 1366, height: 900 },
+            },
+        },
+    ],
 });

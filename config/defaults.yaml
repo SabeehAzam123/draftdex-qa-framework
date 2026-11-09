@@ -1,0 +1,23 @@
+# Defaults for every environment. An environment file (config/environments/<name>.yaml) can override any key.
+# Every key is checked by src/config/schema.ts: a typo or an unknown key stops the run with a clear message.
+
+timeouts:
+  test: 60000        # one test, prerequisites included
+  expect: 7000       # one expect(...) assertion
+  action: 10000      # one click / fill
+  navigation: 20000  # one page load
+
+retries: 0
+workers: 2
+
+browser:
+  channel: chrome    # the installed Google Chrome; "" = Playwright's bundled Chromium
+  headless: true
+
+capture:
+  trace: retain-on-failure
+  screenshot: only-on-failure
+  video: "off"
+
+# The UI to drive: "new" (Phase 3 adds "classic")
+ui: new

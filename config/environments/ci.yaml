@@ -1,0 +1,19 @@
+# GitHub Actions: the app is checked out next to the framework and started by the run.
+name: ci
+description: DraftDex started by the CI job
+dataPolicy: test-data
+baseUrl: http://localhost:3000
+
+accounts:
+  admin:
+    email: DRAFTDEX_ADMIN_EMAIL
+    password: DRAFTDEX_ADMIN_PASSWORD
+
+app:
+  startCommand: npm run dev
+
+retries: 1
+workers: 2
+browser:
+  channel: ""
+  headless: true
