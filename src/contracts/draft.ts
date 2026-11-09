@@ -56,7 +56,15 @@ export const Team = z.strictObject({
     coach: Person,
     league: z.strictObject({ id: Id("lg"), name: z.string(), status: LeagueStatus, budget: z.number().int(), rosterSize: z.number().int() }),
     roster: z.array(
-        z.strictObject({ pokemon: Pokemon, points: z.number().int(), slotNo: z.number().int(), round: z.number().int(), autoPicked: z.boolean() }),
+        z.strictObject({
+            pokemon: Pokemon,
+            points: z.number().int(),
+            slotNo: z.number().int(),
+            round: z.number().int(),
+            autoPicked: z.boolean(),
+            /** Drafted by another team and traded here (phase 1b) */
+            viaTrade: z.boolean(),
+        }),
     ),
     spent: z.number().int(),
     budgetLeft: z.number().int(),

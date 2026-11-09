@@ -33,8 +33,9 @@ const CODE = [...files("src"), ...files("tests").filter((f) => !f.startsWith("te
 
 test.describe("no hardcoding", () => {
     test("no URLs in code: addresses live in config/", () => {
-        // Example hosts used as *refused* inputs, and the masked form the app returns, are fine
-        const allowed = /(evil\.example|169\.254\.169\.254|discord\.com\/api\/webhooks|10\.0\.0\.1)/;
+        // Example hosts used as *refused* inputs, the masked form the app returns, and the Showdown
+        // replay link the app stores as data (src/data) are fine: none is an address the framework calls
+        const allowed = /(evil\.example|169\.254\.169\.254|discord\.com\/api\/webhooks|10\.0\.0\.1|replay\.pokemonshowdown\.com)/;
         expect(offenders(CODE, /https?:\/\//, (_f, line) => allowed.test(line) || /^\s*(\*|\/\/)/.test(line))).toEqual([]);
     });
 

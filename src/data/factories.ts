@@ -42,6 +42,9 @@ export const TEST_LEAGUE_SETTINGS: Partial<LeagueSettings> = {
     pickTimerSeconds: 0,
 };
 
+/** A well-formed Pokémon Showdown replay link: data the app stores with a result, never an address we call. */
+export const SHOWDOWN_REPLAY = "https://replay.pokemonshowdown.com/gen9ou-2101234567";
+
 /** Deliberately invalid sign-up input: each field breaks one rule (the self-tests allow such values only here). */
 export const INVALID_SIGNUP = { email: "not-an-email", password: "short", displayName: "X" } as const;
 

@@ -37,6 +37,12 @@ graph TD
   drafting --> first[draft.first-pick]
   drafting -->|api provider| season[league.season]
   coach -->|existing provider| season
+  season --> reported[match.reported]
+  drafting --> reported
+  season --> proposed[trade.proposed]
+  drafting --> proposed
+  proposed --> accepted[trade.accepted]
+  rival --> accepted
   admin[account.admin]
 ```
 

@@ -91,6 +91,43 @@ export interface LeaguePage {
     reject(teamName: string): Promise<void>;
     startDraft(order: "random" | "listed"): Promise<void>;
     cancelLeague(): Promise<void>;
+    /** "N match(es) still need a final result…" or "Every match is decided…" */
+    seasonStatus(): Locator;
+    completeSeason(): Promise<void>;
+}
+
+export type MatchAction = "report" | "confirm" | "dispute" | "resolve";
+
+export interface SchedulePage {
+    open(leagueId: string): Promise<void>;
+    summary(): Locator;
+    match(matchId: string): Locator;
+    status(matchId: string): Locator;
+    score(matchId: string): Locator;
+    action(matchId: string, a: MatchAction): Locator;
+    report(matchId: string, homeWins: number, awayWins: number, replayUrl?: string): Promise<void>;
+    confirm(matchId: string): Promise<void>;
+    dispute(matchId: string, reason: string): Promise<void>;
+    resolve(matchId: string, homeWins: number, awayWins: number): Promise<void>;
+}
+
+export interface StandingsPage {
+    open(leagueId: string): Promise<void>;
+    row(entryId: string): Locator;
+    champion(): Locator;
+}
+
+export type TradeAction = "accept" | "decline" | "cancel" | "approve" | "reject";
+
+export interface TradesPage {
+    open(leagueId: string): Promise<void>;
+    /** Proposes a trade from the signed-in coach; returns its id (from the save reply). */
+    propose(v: { partnerEntryId: string; give: number[]; get: number[]; note?: string }): Promise<string>;
+    trade(tradeId: string): Locator;
+    status(tradeId: string): Locator;
+    actionButton(tradeId: string, a: TradeAction): Locator;
+    act(tradeId: string, a: TradeAction): Promise<void>;
+    cannotPropose(): Locator;
 }
 
 export interface PoolPage {
@@ -132,6 +169,7 @@ export interface TeamPage {
     open(leagueId: string, entryId: string): Promise<void>;
     name(): Locator;
     rosterCards(): Locator;
+    rosterCard(mon: Mon | { id: number }): Locator;
     copyForShowdown(): Promise<string>;
 }
 
@@ -176,6 +214,9 @@ export type Ui = {
     league: LeaguePage;
     pool: PoolPage;
     draft: DraftPage;
+    schedule: SchedulePage;
+    standings: StandingsPage;
+    trades: TradesPage;
     team: TeamPage;
     settings: SettingsPage;
     wallet: WalletPage;

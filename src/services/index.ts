@@ -2,6 +2,7 @@ import { z } from "zod";
 import { LoginResult, Me, SeedSummary, User, Wallet } from "@/contracts/accounts";
 import { Health, Page, Updated } from "@/contracts/common";
 import { DraftState, Team } from "@/contracts/draft";
+import { Match, Schedule, Standings, Trade } from "@/contracts/season";
 import { Delivery, Entry, League, Notification, Pokemon, PoolRow, PoolSummary, type LeagueSettings } from "@/contracts/leagues";
 import { checkReply, type ApiClient } from "@/core/http/api-client";
 
@@ -172,6 +173,49 @@ export class UsersApi {
     }
 }
 
+export class SeasonApi {
+    constructor(private readonly c: ApiClient) {}
+    schedule(leagueId: string) {
+        return this.c.data("GET", `/leagues/${leagueId}/schedule`, 200, Schedule);
+    }
+    match(leagueId: string, matchId: string) {
+        return this.c.data("GET", `/leagues/${leagueId}/matches/${matchId}`, 200, Match);
+    }
+    report(leagueId: string, matchId: string, homeWins: number, awayWins: number, replayUrl?: string | null) {
+        return this.c.data("POST", `/leagues/${leagueId}/matches/${matchId}/report`, 200, Match, { body: { homeWins, awayWins, replayUrl } });
+    }
+    confirm(leagueId: string, matchId: string) {
+        return this.c.data("POST", `/leagues/${leagueId}/matches/${matchId}/confirm`, 200, Match);
+    }
+    dispute(leagueId: string, matchId: string, reason: string) {
+        return this.c.data("POST", `/leagues/${leagueId}/matches/${matchId}/dispute`, 200, Match, { body: { reason } });
+    }
+    resolve(leagueId: string, matchId: string, homeWins: number, awayWins: number) {
+        return this.c.data("POST", `/leagues/${leagueId}/matches/${matchId}/resolve`, 200, Match, { body: { homeWins, awayWins } });
+    }
+    standings(leagueId: string) {
+        return this.c.data("GET", `/leagues/${leagueId}/standings`, 200, Standings);
+    }
+    complete(leagueId: string) {
+        return this.c.data("POST", `/leagues/${leagueId}/complete`, 200, Standings);
+    }
+}
+
+export type TradeAction = "accept" | "decline" | "cancel" | "approve" | "reject";
+
+export class TradesApi {
+    constructor(private readonly c: ApiClient) {}
+    list(leagueId: string) {
+        return this.c.data("GET", `/leagues/${leagueId}/trades`, 200, z.array(Trade));
+    }
+    propose(leagueId: string, body: { toEntryId: string; give: number[]; get: number[]; note?: string }) {
+        return this.c.data("POST", `/leagues/${leagueId}/trades`, 201, Trade, { body });
+    }
+    act(leagueId: string, tradeId: string, action: TradeAction) {
+        return this.c.data("POST", `/leagues/${leagueId}/trades/${tradeId}/${action}`, 200, Trade);
+    }
+}
+
 export class HealthApi {
     constructor(private readonly c: ApiClient) {}
     async check() {
@@ -194,6 +238,8 @@ export function servicesFor(client: ApiClient) {
         teams: new TeamsApi(client),
         pokemon: new PokemonApi(client),
         users: new UsersApi(client),
+        season: new SeasonApi(client),
+        trades: new TradesApi(client),
         health: new HealthApi(client),
     };
 }

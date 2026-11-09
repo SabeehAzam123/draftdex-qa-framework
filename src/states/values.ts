@@ -17,6 +17,20 @@ export type PickRef = { leagueId: string; entryId: string; pokemonId: number; po
 
 export type SeasonRef = { leagueId: string; name: string };
 
+/** The coach's match against the rival, reported by the coach as a 2–1 win. */
+export type MatchRef = {
+    leagueId: string;
+    matchId: string;
+    coachEntryId: string;
+    rivalEntryId: string;
+    coachSide: "home" | "away";
+    homeWins: number;
+    awayWins: number;
+};
+
+/** A 1-for-1 offer from the coach to the rival: the coach's first Pokémon for the rival's first. */
+export type TradeRef = { leagueId: string; tradeId: string; fromEntryId: string; toEntryId: string; give: number[]; get: number[] };
+
 export interface StateValues {
     /** A fresh account that will run a league */
     "account.commissioner": Account;
@@ -40,6 +54,12 @@ export interface StateValues {
     "draft.first-pick": PickRef;
     /** A league whose draft is complete */
     "league.season": SeasonRef;
+    /** The coach reported a 2–1 win over the rival; waiting for the rival */
+    "match.reported": MatchRef;
+    /** The coach offered a 1-for-1 trade to the rival */
+    "trade.proposed": TradeRef;
+    /** The rival accepted it; waiting for the commissioner */
+    "trade.accepted": TradeRef;
 }
 
 export type StateId = keyof StateValues;

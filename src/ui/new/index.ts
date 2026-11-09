@@ -4,6 +4,7 @@ import { NewLoginPage, NewShell, NewSignupPage, NewToasts } from "./auth.page";
 import { NewAdminUsersPage, NewPokemonPage, NewSettingsPage, NewWalletPage } from "./browse.page";
 import { NewDraftPage, NewPoolPage, NewTeamPage } from "./draft.page";
 import { NewLeagueForm, NewLeaguePage, NewLeaguesPage } from "./leagues.page";
+import { NewSchedulePage, NewStandingsPage, NewTradesPage } from "./season.page";
 
 /** The "New" UI's page objects. */
 export function newUi(page: Page): Ui {
@@ -17,6 +18,9 @@ export function newUi(page: Page): Ui {
         league: new NewLeaguePage(page),
         pool: new NewPoolPage(page),
         draft: new NewDraftPage(page),
+        schedule: new NewSchedulePage(page),
+        standings: new NewStandingsPage(page),
+        trades: new NewTradesPage(page),
         team: new NewTeamPage(page),
         settings: new NewSettingsPage(page),
         wallet: new NewWalletPage(page),

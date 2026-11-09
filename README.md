@@ -8,7 +8,7 @@ It tests **[DraftDex](https://github.com/SabeehAzam123/draftdex)**, a Pokémon d
 
 ## At a glance
 
-- **80 end-to-end flows** (48 API, 32 UI) covering every rule of DraftDex phase 1a, plus **24 self-tests** of the framework itself.
+- **97 end-to-end flows** (57 API, 40 UI) covering every rule of DraftDex, from sign-up through the draft, the season, trades and the prize payout, plus **24 self-tests** of the framework itself.
 - **Prerequisite engine:** states with `api` / `ui` / `existing` providers; a **pure planner** (API first, UI fallback, flow pins, per-run requests, every choice with a reason); a failed setup step is reported as **BLOCKED**, not as the feature failing; a flow this environment can't run is **skipped with the reason**.
 - **`npm run plan`** previews exactly what a flow will set up and why, without running anything.
 - **Tags are the single source of truth.** `flow.define` writes `@flow:`, `@module:`, `@requires:` and `@pin:` tags; `npm run catalog` reads every flow back from `playwright test --list`. No registry to keep in step.
@@ -79,6 +79,8 @@ $ npm run plan -- draft.ui-first-pick
 | pool | 6 | 3 | default tiers, all-or-nothing updates, CSV import errors by line, read-only for coaches, locked after the draft |
 | entry | 6 | 6 | fees into the prize pool, duplicate names, full league, insufficient credits, approve/reject/withdraw refunds |
 | draft | 13 | 7 | snake order, turn, banned/taken, the budget rule, commissioner picks and skips, **a simultaneous-pick race**, **the pick timer (real clock)**, finishing the draft |
+| season | 5 | 5 | the round-robin schedule, best-of-three and replay-link rules, confirm vs dispute, the commissioner's final word, standings, **the payout by place (140 / 60 from a 200 pool)** |
+| trade | 4 | 3 | even swaps of owned Pokémon only, accept → approve swaps ownership, decline / cancel, **a stale trade can't be approved** |
 | team | 2 | 1 | roster order, Showdown export text |
 | notify | 3 | 2 | webhook URL masked and never returned, SSRF guard, commissioner-only |
 | admin, pokemon, wallet | 4 | 4 | admin-only user management, self-guards, browsing, the ledger in the wallet |
@@ -113,8 +115,9 @@ Every folder has a README with its rules (and a template where it helps). Start 
 
 1. ✅ DraftDex app core, with unit tests (in the app repo)
 2. ✅ This framework's core, and end-to-end flows for everything in it
-3. DraftDex's Classic UI, and every UI flow running on both UIs behind the same page-object interfaces
-4. Network capture per step, secret masking, a post-run leak check, a repetition gate, GitHub Actions CI with a published report
-5. A Streamlit runner so manual testers can pick flows, see their plan, run them and read the results, with an installer and a Practice tab
-6. Bug Lab (switchable planted bugs in the app) and a `learn/` path from manual testing to writing flows; BDD scenarios return here as the on-ramp
-7. Hosted demo and screenshots
+3. ✅ DraftDex's season, results, standings, trades and payouts, with unit tests and flows
+4. **Groundwork:** the engine (planner, flow DSL, catalog, plan, config, HTTP client, self-tests) moves into its own product, a package plus `npm create groundwork` to start testing any app or website. This repo becomes the first project built on it
+5. DraftDex's Classic UI, and every UI flow running on both UIs behind the same page-object interfaces
+6. In Groundwork: network capture per step, secret masking, a post-run leak check, a repetition gate, CI with a published report, and one Streamlit runner for every Groundwork project
+7. Bug Lab (switchable planted bugs in the app) and a `learn/` path from manual testing to writing flows; BDD scenarios return here as the on-ramp
+8. Hosted demo and screenshots

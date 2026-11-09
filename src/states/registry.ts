@@ -3,6 +3,7 @@ import * as accounts from "./accounts";
 import * as draft from "./draft";
 import * as entries from "./entries";
 import * as league from "./league";
+import * as season from "./season";
 import type { StateId } from "./values";
 
 const ALL: StateDef<StateId>[] = [
@@ -17,6 +18,9 @@ const ALL: StateDef<StateId>[] = [
     entries.rival,
     draft.drafting,
     draft.firstPick,
+    season.reported,
+    season.proposed,
+    season.accepted,
 ] as StateDef<StateId>[];
 
 /** Every prerequisite state, by id. A self-test checks each one is listed once and the graph is sound. */

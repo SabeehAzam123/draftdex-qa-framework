@@ -137,6 +137,9 @@ export class NewTeamPage implements TeamPage {
     rosterCards() {
         return this.l.cards;
     }
+    rosterCard(mon: { id: number }) {
+        return this.page.locator(`[data-testid="roster-card"][data-pokemon-id="${mon.id}"]`);
+    }
     async copyForShowdown(): Promise<string> {
         await expectOk(this.page, call("GET", /\/showdown$/), () => this.l.copy.click());
         await expect(this.l.text).toBeVisible();

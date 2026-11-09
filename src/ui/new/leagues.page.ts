@@ -158,4 +158,12 @@ export class NewLeaguePage implements LeaguePage {
         await expectOk(this.page, call("POST", /\/cancel$/), () => this.l.cancelConfirm.click());
         await expect(this.l.status).toHaveText("Cancelled");
     }
+    seasonStatus() {
+        return this.l.seasonStatus;
+    }
+    async completeSeason() {
+        await this.l.complete.click();
+        await expectOk(this.page, call("POST", /\/complete$/), () => this.l.completeConfirm.click());
+        await expect(this.l.status).toHaveText("Completed");
+    }
 }
