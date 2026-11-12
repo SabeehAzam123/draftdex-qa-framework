@@ -116,8 +116,7 @@ Every folder has a README with its rules (and a template where it helps). Start 
 1. ✅ DraftDex app core, with unit tests (in the app repo)
 2. ✅ This framework's core, and end-to-end flows for everything in it
 3. ✅ DraftDex's season, results, standings, trades and payouts, with unit tests and flows
-4. **Groundwork:** the engine (planner, flow DSL, catalog, plan, config, HTTP client, self-tests) moves into its own product, a package plus `npm create groundwork` to start testing any app or website. This repo becomes the first project built on it
+4. ✅ The engine made app-agnostic: it now also lives on as a separate, private framework I use to test other apps. This repo keeps its own copy, so it clones and runs on its own
 5. DraftDex's Classic UI, and every UI flow running on both UIs behind the same page-object interfaces
-6. In Groundwork: network capture per step, secret masking, a post-run leak check, a repetition gate, CI with a published report, and one Streamlit runner for every Groundwork project
-7. Bug Lab (switchable planted bugs in the app) and a `learn/` path from manual testing to writing flows; BDD scenarios return here as the on-ramp
-8. Hosted demo and screenshots
+6. Bug Lab (switchable planted bugs in the app) and a `learn/` path from manual testing to writing flows; BDD scenarios return here as the on-ramp
+7. Hosted demo and screenshots
